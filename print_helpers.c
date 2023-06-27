@@ -1,6 +1,6 @@
 /**
  * print_char - function that prints a character
- * @args: va_list argument containing the character to be printed 
+ * @args: va_list argument containing the character to be printed
  * Return: number of characters printed
  */
 #include <unistd.h>
@@ -8,6 +8,7 @@
 int print_char(va_list args)
 {
 	char ch = va_arg(args, int);
+
 	write(1, &ch, 1);
 	return (1);
 }
