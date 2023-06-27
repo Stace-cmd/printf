@@ -11,7 +11,7 @@
 
 int _printf(const char *format, ...)
 {
-	int ccount = 0;
+	int count = 0;
 	va_list args;
 
 	va_start(args, format);
@@ -26,6 +26,8 @@ int _printf(const char *format, ...)
 		{
 			format++;
 			if (*format == '\0')
+				break;
+			if (*format == '%')
 			{
 				write(1, format, 1);
 				count++;
