@@ -1,13 +1,15 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <unistd.h>
+#include <stdarg.h>
 
-int _printf(const char *format, ...);
-int _print_char(char c);
-int _print_str(char *str);
-int _print_number(int n);
 int _putchar(char c);
+int _printf(const char *format, ...);
+int handle_conversion(char specifier, va_list args);
+int print_char(va_list args);
+int print_string(va_list args);
+int print_int(va_list args);
+int print_int_recursive(int num);
 
 #endif /* MAIN_H */
 
