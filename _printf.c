@@ -1,60 +1,64 @@
 #include "main.h"
-#include <unistd.h>
+#include <stdarg.h>
 
-/**
- * _printf - Prints output according to a format.
- * @format: The format string.
- *
- * Return: The number of characters printed.
- */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	int count = 0;
-	char *ptr = (char *)format;
+    va_list args;
+    int len = 0;
+    char *str;
 
-	va_start(args, format);
+    va_start(args, format);
+    while (*format)
+    {
+        if (*format == '%')
+        {
+            format++;
+            switch (*format)
+            {
+                case 'c':
+                    _print_char(va_arg(args, int));
+                    len++;
+                    break;
+                case 's':
+                    str = va_arg(args, char *);
+                    len += _print_str(str);
+                    break;
+                case '%':
+                    _putchar('%');
+                    len++;
+                    break;
+            }
+        }
+        else
+        {
+            _putchar(*format);
+            len++;
+        }
+        format++;
+    }
+    va_end(args);
+    return (len);
+}
 
-	while (*ptr)
-	{
-		if (*ptr == '%')
-		{
-			ptr++;
-			if (*ptr == '\0')
-				break;
-			if (*ptr == '%')
-			{
-				count += write(1, "%", 1);
-				ptr++;
-			}
-			else if (*ptr == 'c')
-			{
-				/* Handle character */
-				int c = va_arg(args, int);
-				count += write(1, &c, 1);
-				ptr++;
-			}
-			else if (*ptr == 's')
-			{
-				/* Handle string */
-				char *s = va_arg(args, char *);
-				while (*s)
-				{
-					count += write(1, s, 1);
-					s++;
-				}
-				ptr++;
-			}
-		}
-		else
-		{
-			count += write(1, ptr, 1);
-			ptr++;
-		}
-	}
+int _print_char(char c)
+{
+    return (write(1, &c, 1));
+}
 
-	va_end(args);
+int _print_str(char *str)
+{
+    int len = 0;
+    while (*str)
+    {
+        _putchar(*str);
+        len++;
+        str++;
+    }
+    return (len);
+}
 
-	return (count);
+int _putchar(char c)
+{
+    return (write(1, &c, 1));
 }
 
