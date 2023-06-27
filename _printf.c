@@ -1,48 +1,60 @@
-/**
- * _printf - prints formatted string
- * @format: format string
- * @...: unknown parameters
- * Return: number of characters printed
- */
 #include "main.h"
-#include "print_helpers.h"
 #include <unistd.h>
-#include <stdarg>
 
+/**
+ * _printf - Prints output according to a format.
+ * @format: The format string.
+ *
+ * Return: The number of characters printed.
+ */
 int _printf(const char *format, ...)
 {
-	int count = 0;
 	va_list args;
+	int count = 0;
+	char *ptr = (char *)format;
 
 	va_start(args, format);
-	while (*format)
+
+	while (*ptr)
 	{
-		if (*format != '%')
+		if (*ptr == '%')
 		{
-			write(1, format, 1);
-			count++;
+			ptr++;
+			if (*ptr == '\0')
+				break;
+			if (*ptr == '%')
+			{
+				count += write(1, "%", 1);
+				ptr++;
+			}
+			else if (*ptr == 'c')
+			{
+				/* Handle character */
+				int c = va_arg(args, int);
+				count += write(1, &c, 1);
+				ptr++;
+			}
+			else if (*ptr == 's')
+			{
+				/* Handle string */
+				char *s = va_arg(args, char *);
+				while (*s)
+				{
+					count += write(1, s, 1);
+					s++;
+				}
+				ptr++;
+			}
 		}
 		else
 		{
-			format++;
-			if (*format == '\0')
-				break;
-			if (*format == '%')
-			{
-				write(1, format, 1);
-				count++;
-			}
+			count += write(1, ptr, 1);
+			ptr++;
 		}
-		else if  (*format == 'c')
-		{
-			count += print_char(args);
-		}
-		else if (*format == 's')
-		{
-			count += print_string(args);
-		}
-		format++;
 	}
+
 	va_end(args);
+
 	return (count);
 }
+
